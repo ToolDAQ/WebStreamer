@@ -1,0 +1,62 @@
+\hypertarget{classDataModel}{}\doxysection{Data\+Model Class Reference}
+\label{classDataModel}\index{DataModel@{DataModel}}
+
+
+{\ttfamily \#include $<$Data\+Model.\+h$>$}
+
+Inheritance diagram for Data\+Model\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classDataModel}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDataModel_abff03aef2cb531142a35781bb87c3365}\label{classDataModel_abff03aef2cb531142a35781bb87c3365}} 
+\mbox{\hyperlink{classDataModel_abff03aef2cb531142a35781bb87c3365}{Data\+Model}} ()
+\begin{DoxyCompactList}\small\item\em Simple constructor. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDataModel_a3b2dc64a0190ef8411fdb3ab3abc34bd}\label{classDataModel_a3b2dc64a0190ef8411fdb3ab3abc34bd}} 
+Job\+Queue {\bfseries job\+\_\+queue}
+\item 
+\mbox{\Hypertarget{classDataModel_ac4edacffc475bf54e646f9899ba8241c}\label{classDataModel_ac4edacffc475bf54e646f9899ba8241c}} 
+uint32\+\_\+t {\bfseries thread\+\_\+cap} = 20
+\item 
+\mbox{\Hypertarget{classDataModel_a495991baaf583f28b0dc17f6075d9172}\label{classDataModel_a495991baaf583f28b0dc17f6075d9172}} 
+std\+::atomic$<$ uint32\+\_\+t $>$ {\bfseries num\+\_\+threads} \{0\}
+\item 
+\mbox{\Hypertarget{classDataModel_aeede8bacf2115013805c4dddd178d45c}\label{classDataModel_aeede8bacf2115013805c4dddd178d45c}} 
+Store {\bfseries monitoring\+\_\+store}
+\item 
+\mbox{\Hypertarget{classDataModel_a529963468eb2c5d96cf716a78ced025d}\label{classDataModel_a529963468eb2c5d96cf716a78ced025d}} 
+std\+::mutex {\bfseries monitoring\+\_\+store\+\_\+mtx}
+\item 
+\mbox{\Hypertarget{classDataModel_af55760a38ab2aa071f687903f05f7be1}\label{classDataModel_af55760a38ab2aa071f687903f05f7be1}} 
+std\+::unordered\+\_\+map$<$ std\+::string, \mbox{\hyperlink{structChannel}{Channel}} $>$ {\bfseries channels}
+\item 
+\mbox{\Hypertarget{classDataModel_a7581cc571b18f67b61b7f825d8ce5f01}\label{classDataModel_a7581cc571b18f67b61b7f825d8ce5f01}} 
+std\+::shared\+\_\+mutex {\bfseries channels\+\_\+mutex}
+\item 
+\mbox{\Hypertarget{classDataModel_aac0da0ec418800b1786f7984b5aed8e5}\label{classDataModel_aac0da0ec418800b1786f7984b5aed8e5}} 
+std\+::atomic$<$ int $>$ {\bfseries client\+\_\+counter} \{0\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class Is a transient data model class for your Tools within the Tool\+Chain. If Tools need to comunicate they pass all data objects through the data model. There fore inter tool data objects should be deffined in this class.
+
+\begin{DoxyParagraph}{Author}
+B.\+Richards 
+\end{DoxyParagraph}
+\begin{DoxyParagraph}{Date}
+2019/05/26 18\+:34\+:00 
+\end{DoxyParagraph}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Data\+Model/Data\+Model.\+h\item 
+Data\+Model/Data\+Model.\+cpp\end{DoxyCompactItemize}

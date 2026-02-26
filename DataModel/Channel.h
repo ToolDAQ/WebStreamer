@@ -8,6 +8,7 @@
 #include <App.h>
 #include <PerSocketData.h>
 #include <shared_mutex>
+#include <unordered_map>
 
 class Channel{
 
@@ -19,7 +20,9 @@ class Channel{
   void RemoveAll();
   void RemoveClient(std::vector<std::string> keys, std::string client_id);
   void AddClient(std::vector<std::string> keys, uWS::WebSocket<false, true, PerSocketData>* ws);
-  void Send(std::string message, std::string filter);
+  void Send(const std::string &message, std::string filter);
+  void Send(std::vector<std::string> &messages, std::string filter);
+  void Send(std::unordered_map<std::string, std::vector<std::string> > &messages);
   
 };
 

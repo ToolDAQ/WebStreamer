@@ -33,12 +33,12 @@ void Channel::AddClient(std::vector<std::string> keys, uWS::WebSocket<false, tru
   mtx.unlock();
 }
 
-void Channel::Send(std::string message, std::string filter){
+void Channel::Send(const std::string &message, std::string filter){
   
   mtx.lock_shared();
   for(std::unordered_map<std::string, std::vector<uWS::WebSocket<false, true, PerSocketData>* > >::iterator it=filtered_clients.begin(); it!=filtered_clients.end(); it++){
     
-    if(it->first==filter && it->first!="*"){
+    if(it->first.find(filter) != std::string::npos && it->first!="*"){
       for( std::vector<uWS::WebSocket<false, true, PerSocketData>* >::iterator client=it->second.begin(); client!=it->second.end(); client++){
 	(*client)->getUserData()->mtx->lock();
 	(*client)->send(message, uWS::OpCode::TEXT);
@@ -48,6 +48,7 @@ void Channel::Send(std::string message, std::string filter){
       break;
     }
   }
+
   
   for(std::vector<uWS::WebSocket<false, true, PerSocketData>* >::iterator client=filtered_clients["*"].begin(); client!=filtered_clients["*"].end(); client++){
     (*client)->send(message, uWS::OpCode::TEXT);
@@ -58,3 +59,20 @@ void Channel::Send(std::string message, std::string filter){
 }
 
 
+void Channel::Send(std::vector<std::string> &messages, std::string filter){
+  std::string tmp="{[";
+
+  for(std::vector<std::string>::iterator it=messages.begin(); it!=messages.end(); it++){
+    tmp.append(*it);
+  }
+  tmp.append("]}");
+  Send(tmp, filter);
+}
+
+
+void Channel::Send(std::unordered_map<std::string, std::vector<std::string> > &messages){
+  
+  for(std::unordered_map<std::string, std::vector<std::string> >::iterator it= messages.begin(); it!= messages.end(); it++){
+    if(filtered_clients.count(it->first)) Send(it->second, it->first);  
+  }
+}

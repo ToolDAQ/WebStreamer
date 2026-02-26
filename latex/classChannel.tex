@@ -12,8 +12,14 @@ void {\bfseries Remove\+Client} (std\+::vector$<$ std\+::string $>$ keys, std\+:
 \mbox{\Hypertarget{classChannel_aee7942d31b1a28fc91564aaf6e805653}\label{classChannel_aee7942d31b1a28fc91564aaf6e805653}} 
 void {\bfseries Add\+Client} (std\+::vector$<$ std\+::string $>$ keys, u\+WS\+::\+Web\+Socket$<$ false, true, \mbox{\hyperlink{structPerSocketData}{Per\+Socket\+Data}} $>$ $\ast$ws)
 \item 
-\mbox{\Hypertarget{classChannel_a97bb3ea85e214c04baf978981044e1d8}\label{classChannel_a97bb3ea85e214c04baf978981044e1d8}} 
-void {\bfseries Send} (std\+::string message, std\+::string filter)
+\mbox{\Hypertarget{classChannel_a2058b861e115e82e349907feada715e3}\label{classChannel_a2058b861e115e82e349907feada715e3}} 
+void {\bfseries Send} (const std\+::string \&message, std\+::string filter)
+\item 
+\mbox{\Hypertarget{classChannel_afc4e9e320d2c75aebbf525292c14ed06}\label{classChannel_afc4e9e320d2c75aebbf525292c14ed06}} 
+void {\bfseries Send} (std\+::vector$<$ std\+::string $>$ \&messages, std\+::string filter)
+\item 
+\mbox{\Hypertarget{classChannel_a956db2ab884e0f6bf5af17bab821d7d9}\label{classChannel_a956db2ab884e0f6bf5af17bab821d7d9}} 
+void {\bfseries Send} (std\+::unordered\+\_\+map$<$ std\+::string, std\+::vector$<$ std\+::string $>$ $>$ \&messages)
 \end{DoxyCompactItemize}
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}

@@ -81,9 +81,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>RemoveClient</b> (std
 <tr class="memitem:aee7942d31b1a28fc91564aaf6e805653"><td class="memItemLeft" align="right" valign="top"><a id="aee7942d31b1a28fc91564aaf6e805653"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>AddClient</b> (std::vector&lt; std::string &gt; keys, uWS::WebSocket&lt; false, true, <a class="el" href="structPerSocketData.html">PerSocketData</a> &gt; *ws)</td></tr>
 <tr class="separator:aee7942d31b1a28fc91564aaf6e805653"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97bb3ea85e214c04baf978981044e1d8"><td class="memItemLeft" align="right" valign="top"><a id="a97bb3ea85e214c04baf978981044e1d8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Send</b> (std::string message, std::string filter)</td></tr>
-<tr class="separator:a97bb3ea85e214c04baf978981044e1d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2058b861e115e82e349907feada715e3"><td class="memItemLeft" align="right" valign="top"><a id="a2058b861e115e82e349907feada715e3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>Send</b> (const std::string &amp;message, std::string filter)</td></tr>
+<tr class="separator:a2058b861e115e82e349907feada715e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc4e9e320d2c75aebbf525292c14ed06"><td class="memItemLeft" align="right" valign="top"><a id="afc4e9e320d2c75aebbf525292c14ed06"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>Send</b> (std::vector&lt; std::string &gt; &amp;messages, std::string filter)</td></tr>
+<tr class="separator:afc4e9e320d2c75aebbf525292c14ed06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a956db2ab884e0f6bf5af17bab821d7d9"><td class="memItemLeft" align="right" valign="top"><a id="a956db2ab884e0f6bf5af17bab821d7d9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>Send</b> (std::unordered_map&lt; std::string, std::vector&lt; std::string &gt; &gt; &amp;messages)</td></tr>
+<tr class="separator:a956db2ab884e0f6bf5af17bab821d7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>

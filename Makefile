@@ -10,11 +10,11 @@ ifeq ($(MAKECMDGOALS),debug)
 CXXFLAGS+= -O0 -g -lSegFault -rdynamic -DDEBUG
 endif
 
-DataModelInclude = -I ../uWebSockets/src/
+DataModelInclude = -I $(Dependencies)/uWebSockets/src/
 DataModelLib =  -lssl -lcrypto -lz -pthread
 
-MyToolsInclude =  -I ../uWebSockets/src/ 
-MyToolsLib = ../uWebSockets/uSockets/uSockets.a
+MyToolsInclude =  -I $(Dependencies)/uWebSockets/src/ 
+MyToolsLib = $(Dependencies)/uWebSockets/uSockets/uSockets.a
 
 ZMQLib= -L $(Dependencies)/zeromq-4.0.7/lib -lzmq 
 ZMQInclude= -I $(Dependencies)/zeromq-4.0.7/include/ 

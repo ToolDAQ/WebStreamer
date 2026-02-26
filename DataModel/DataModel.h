@@ -18,26 +18,9 @@
 #include <shared_mutex>
 #include <mutex>
 #include <atomic>
-#include <unordered_map>
-#include <unordered_set>
-#include <App.h>
+#include <Channel.h>
 
 using namespace ToolFramework;
-
-// Per-connection data
-struct PerSocketData {
-  std::string channel;
-  std::string client_id;
-  std::unordered_map<std::string, std::unordered_set<std::string>> device_keys;
-  std::mutex* mtx = 0;
-};
-
-struct Channel{
-
-  std::unordered_set<uWS::WebSocket<false, true, PerSocketData>*> clients;
-  std::unordered_map<std::string, std::unordered_set<std::string>> device_keys;
-
-};
 
 /**
  * \class DataModel
@@ -67,7 +50,7 @@ class DataModel : public DAQDataModelBase {
 
 
   std::unordered_map<std::string, Channel> channels;
-  std::shared_mutex channels_mutex;
+  std::shared_mutex channels_mtx;
   std::atomic<int> client_counter{0};
   
  private:

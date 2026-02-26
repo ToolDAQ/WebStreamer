@@ -1,2 +1,4 @@
-test1 DummyTool configfiles/Dummy/DummyToolConfig
-test2 DummyTool configfiles/Dummy/DummyToolConfig
+#test1 DummyTool configfiles/Dummy/DummyToolConfig
+#test2 DummyTool configfiles/Dummy/DummyToolConfig
+WebSocket WebSocket Null
+FakeDataSource FakeDataSource Null

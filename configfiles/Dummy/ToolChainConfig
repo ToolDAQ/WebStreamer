@@ -2,7 +2,7 @@
 
 ##### Runtime Paramiters #####
 UUID_path ./UUID         # UUID_path for fixed UUID, if doesnt exist file will be generated. Remove option for always random
-verbose 9     		 # Verbosity level of ToolChain
+verbose 1     		 # Verbosity level of ToolChain
 error_level 0 		 # 0= do not exit, 1= exit on unhandeled errors only, 2= exit on unhandeled errors and handeled errors
 attempt_recover 1	 # 1= will attempt to finalise if an execute fails, 0= will not
 remote_port 24004	 # port to open for remote commands if running in remote mode
@@ -47,7 +47,7 @@ multicast_address 239.192.1.1	#
 Tools_File configfiles/Dummy/ToolsConfig	# list of tools to run and their config files
 
 ##### Run Type #####
-Inline 1		# number of Execute steps in program, -1 infinite loop that is ended by user
-Interactive 0		# set to 1 if you want to run the code interactively
+Inline 0		# number of Execute steps in program, -1 infinite loop that is ended by user
+Interactive 1		# set to 1 if you want to run the code interactively
 Remote 0    		# set to 1 if you want to run the code remotely
 

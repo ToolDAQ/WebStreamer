@@ -25,9 +25,8 @@ struct WebSocket_args:Thread_args{
   ~WebSocket_args();
 
   DataModel* m_data = 0;
-  //uWS::Loop* loop = 0;
-  us_listen_socket_t* token = 0;
-  
+  uWS::Loop* loop = 0;
+  uWS::App* app = 0;  
 };
 
 
@@ -49,6 +48,8 @@ class WebSocket: public Tool {
   bool Initialise(std::string configfile,DataModel &data); ///< Initialise Function for setting up Tool resorces. @param configfile The path and name of the dynamic configuration file to read in. @param data A reference to the transient data class used to pass information between Tools.
   bool Execute(); ///< Executre function used to perform Tool perpose. 
   bool Finalise(); ///< Finalise funciton used to clean up resorces.
+  static DataModel* s_data;
+  //  static us_listen_socket_t* s_token;
 
 
  private:
@@ -58,7 +59,13 @@ class WebSocket: public Tool {
   std::vector<WebSocket_args*> args; ///< Vector of thread args (also holds pointers to the threads)
   unsigned int m_freethreads; ///< Keeps track of free threads
 
-};
+  static void onUpgrade(uWS::HttpResponse<false>* res, uWS::HttpRequest* req, us_socket_context_t* context);
+  static void onOpen(uWS::WebSocket<false, true, PerSocketData>* ws);
+  static void onMessage(uWS::WebSocket<false, true, PerSocketData>* ws, std::string_view message, uWS::OpCode);
+  static void onClose(uWS::WebSocket<false, true, PerSocketData>* ws, int, std::string_view);
+  static void onListen(us_listen_socket_t* token);
+  //  us_loop_t *globalLoop = nullptr;
+ };
 
 
 #endif

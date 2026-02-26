@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['persocketdata_20',['PerSocketData',['../structPerSocketData.html',1,'']]]
+  ['persocketdata_23',['PerSocketData',['../structPerSocketData.html',1,'']]]
 ];

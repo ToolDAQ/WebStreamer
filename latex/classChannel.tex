@@ -1,0 +1,32 @@
+\hypertarget{classChannel}{}\doxysection{Channel Class Reference}
+\label{classChannel}\index{Channel@{Channel}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classChannel_aa2dbe88e8b75cad5bbed6867f86d4c00}\label{classChannel_aa2dbe88e8b75cad5bbed6867f86d4c00}} 
+void {\bfseries Remove\+All} ()
+\item 
+\mbox{\Hypertarget{classChannel_aac9bf60c04629d56780fb3a8968a97d8}\label{classChannel_aac9bf60c04629d56780fb3a8968a97d8}} 
+void {\bfseries Remove\+Client} (std\+::vector$<$ std\+::string $>$ keys, std\+::string client\+\_\+id)
+\item 
+\mbox{\Hypertarget{classChannel_aee7942d31b1a28fc91564aaf6e805653}\label{classChannel_aee7942d31b1a28fc91564aaf6e805653}} 
+void {\bfseries Add\+Client} (std\+::vector$<$ std\+::string $>$ keys, u\+WS\+::\+Web\+Socket$<$ false, true, \mbox{\hyperlink{structPerSocketData}{Per\+Socket\+Data}} $>$ $\ast$ws)
+\item 
+\mbox{\Hypertarget{classChannel_a97bb3ea85e214c04baf978981044e1d8}\label{classChannel_a97bb3ea85e214c04baf978981044e1d8}} 
+void {\bfseries Send} (std\+::string message, std\+::string filter)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classChannel_aefd4f5e054ea6fd760421b6197e3c86e}\label{classChannel_aefd4f5e054ea6fd760421b6197e3c86e}} 
+std\+::unordered\+\_\+map$<$ std\+::string, std\+::vector$<$ u\+WS\+::\+Web\+Socket$<$ false, true, \mbox{\hyperlink{structPerSocketData}{Per\+Socket\+Data}} $>$ $\ast$ $>$ $>$ {\bfseries filtered\+\_\+clients}
+\item 
+\mbox{\Hypertarget{classChannel_a583b47246ba32fd1faa5a6438108018b}\label{classChannel_a583b47246ba32fd1faa5a6438108018b}} 
+std\+::shared\+\_\+mutex {\bfseries mtx}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Data\+Model/Channel.\+h\item 
+Data\+Model/Channel.\+cpp\end{DoxyCompactItemize}

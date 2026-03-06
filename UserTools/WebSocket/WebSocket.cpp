@@ -17,7 +17,7 @@ bool WebSocket::Initialise(std::string configfile, DataModel &data) {
 
     unsigned int threadcount = 0;
     if (!m_variables.Get("Threads", threadcount)) threadcount = 1;
-
+    
     m_util = new Utilities();
 
     for (unsigned int i = 0; i < threadcount; i++) {
@@ -27,7 +27,7 @@ bool WebSocket::Initialise(std::string configfile, DataModel &data) {
         
         std::stringstream tmp;
         tmp << "T" << i;
-        m_util->CreateThread(tmp.str(), &Thread, args.at(i));
+	m_util->CreateThread(tmp.str(), &Thread, args.at(i));
     }
 
     m_freethreads = threadcount;
@@ -39,7 +39,7 @@ bool WebSocket::Initialise(std::string configfile, DataModel &data) {
 }
 
 bool WebSocket::Execute() {
-  usleep(100);
+  sleep(1);
   return true;
 }
 
@@ -161,8 +161,11 @@ void WebSocket::onMessage(uWS::WebSocket<false, true, PerSocketData>* ws, std::s
 
     //printf("keys.size() = %u\n", keys.size());
 
-    if(!update) return;
-
+    if(!update){
+      if(user->channel != "") s_data->channels[user->channel].AddMessage(std::string(message), ws);
+      return;
+    }
+    
     std::string current_channel="";
     std::vector<std::string> current_keys;
     
@@ -184,6 +187,7 @@ void WebSocket::onMessage(uWS::WebSocket<false, true, PerSocketData>* ws, std::s
       
     //    printf("add channel = %s, filter = %s\n",);
     s_data->channels[channel].AddClient(keys, ws);
+    s_data->channels[channel].AddConnectMessage(std::string(message), ws);
        
 }
 

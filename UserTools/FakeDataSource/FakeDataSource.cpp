@@ -59,6 +59,8 @@ void FakeDataSource::Thread(Thread_args* arg){
   //}
   
   args->m_data->channels["test"].Send("hello world","pmt26");
+  args->m_data->channels["test"].MessageClear();
+  args->m_data->channels["test"].ConnectMessageClear();
   sleep(1);
 
 }

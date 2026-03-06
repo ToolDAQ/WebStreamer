@@ -59,7 +59,7 @@ bool DummyTool::Execute(){
  *m_log<<red<<"red, "<<"still red, "<<green<<"green, "<<plain<<"no colour, "<<purple<<"purple"<<std::endl;
  *m_log<<"no colour"<<std::endl;
 
-
+ sleep(1);
   return true;
 }
 

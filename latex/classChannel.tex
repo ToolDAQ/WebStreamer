@@ -20,15 +20,24 @@ void {\bfseries Send} (std\+::vector$<$ std\+::string $>$ \&messages, std\+::str
 \item 
 \mbox{\Hypertarget{classChannel_a956db2ab884e0f6bf5af17bab821d7d9}\label{classChannel_a956db2ab884e0f6bf5af17bab821d7d9}} 
 void {\bfseries Send} (std\+::unordered\+\_\+map$<$ std\+::string, std\+::vector$<$ std\+::string $>$ $>$ \&messages)
-\end{DoxyCompactItemize}
-\doxysubsection*{Public Attributes}
-\begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classChannel_aefd4f5e054ea6fd760421b6197e3c86e}\label{classChannel_aefd4f5e054ea6fd760421b6197e3c86e}} 
-std\+::unordered\+\_\+map$<$ std\+::string, std\+::vector$<$ u\+WS\+::\+Web\+Socket$<$ false, true, \mbox{\hyperlink{structPerSocketData}{Per\+Socket\+Data}} $>$ $\ast$ $>$ $>$ {\bfseries filtered\+\_\+clients}
+\mbox{\Hypertarget{classChannel_a2fe9f52758771f9f1d0edd65e98ff06c}\label{classChannel_a2fe9f52758771f9f1d0edd65e98ff06c}} 
+void {\bfseries Add\+Message} (std\+::string message, u\+WS\+::\+Web\+Socket$<$ false, true, \mbox{\hyperlink{structPerSocketData}{Per\+Socket\+Data}} $>$ $\ast$ws)
 \item 
-\mbox{\Hypertarget{classChannel_a583b47246ba32fd1faa5a6438108018b}\label{classChannel_a583b47246ba32fd1faa5a6438108018b}} 
-std\+::shared\+\_\+mutex {\bfseries mtx}
+\mbox{\Hypertarget{classChannel_a948dac8d2181a3f0e4549829dab4ff7a}\label{classChannel_a948dac8d2181a3f0e4549829dab4ff7a}} 
+void {\bfseries Add\+Connect\+Message} (std\+::string message, u\+WS\+::\+Web\+Socket$<$ false, true, \mbox{\hyperlink{structPerSocketData}{Per\+Socket\+Data}} $>$ $\ast$ws)
+\item 
+\mbox{\Hypertarget{classChannel_a0d357f9b81be718c812c587e8ffdc686}\label{classChannel_a0d357f9b81be718c812c587e8ffdc686}} 
+\mbox{\hyperlink{structClientRequest}{Client\+Request}} {\bfseries Get\+Message} ()
+\item 
+\mbox{\Hypertarget{classChannel_abf251475923af08ad59225581eda1f56}\label{classChannel_abf251475923af08ad59225581eda1f56}} 
+\mbox{\hyperlink{structClientRequest}{Client\+Request}} {\bfseries Get\+Connect\+Message} ()
+\item 
+\mbox{\Hypertarget{classChannel_a9581df5ff4f5c9493ea26411f2cdbb37}\label{classChannel_a9581df5ff4f5c9493ea26411f2cdbb37}} 
+void {\bfseries Message\+Clear} ()
+\item 
+\mbox{\Hypertarget{classChannel_a40ef6536bb004bc86c42405f47749ee0}\label{classChannel_a40ef6536bb004bc86c42405f47749ee0}} 
+void {\bfseries Connect\+Message\+Clear} ()
 \end{DoxyCompactItemize}
 
 

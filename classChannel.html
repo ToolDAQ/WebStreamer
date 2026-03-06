@@ -63,7 +63,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classChannel-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Channel Class Reference</div>  </div>
@@ -90,15 +89,24 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Send</b> (std::vector
 <tr class="memitem:a956db2ab884e0f6bf5af17bab821d7d9"><td class="memItemLeft" align="right" valign="top"><a id="a956db2ab884e0f6bf5af17bab821d7d9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>Send</b> (std::unordered_map&lt; std::string, std::vector&lt; std::string &gt; &gt; &amp;messages)</td></tr>
 <tr class="separator:a956db2ab884e0f6bf5af17bab821d7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:aefd4f5e054ea6fd760421b6197e3c86e"><td class="memItemLeft" align="right" valign="top"><a id="aefd4f5e054ea6fd760421b6197e3c86e"></a>
-std::unordered_map&lt; std::string, std::vector&lt; uWS::WebSocket&lt; false, true, <a class="el" href="structPerSocketData.html">PerSocketData</a> &gt; * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>filtered_clients</b></td></tr>
-<tr class="separator:aefd4f5e054ea6fd760421b6197e3c86e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a583b47246ba32fd1faa5a6438108018b"><td class="memItemLeft" align="right" valign="top"><a id="a583b47246ba32fd1faa5a6438108018b"></a>
-std::shared_mutex&#160;</td><td class="memItemRight" valign="bottom"><b>mtx</b></td></tr>
-<tr class="separator:a583b47246ba32fd1faa5a6438108018b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fe9f52758771f9f1d0edd65e98ff06c"><td class="memItemLeft" align="right" valign="top"><a id="a2fe9f52758771f9f1d0edd65e98ff06c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>AddMessage</b> (std::string message, uWS::WebSocket&lt; false, true, <a class="el" href="structPerSocketData.html">PerSocketData</a> &gt; *ws)</td></tr>
+<tr class="separator:a2fe9f52758771f9f1d0edd65e98ff06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a948dac8d2181a3f0e4549829dab4ff7a"><td class="memItemLeft" align="right" valign="top"><a id="a948dac8d2181a3f0e4549829dab4ff7a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>AddConnectMessage</b> (std::string message, uWS::WebSocket&lt; false, true, <a class="el" href="structPerSocketData.html">PerSocketData</a> &gt; *ws)</td></tr>
+<tr class="separator:a948dac8d2181a3f0e4549829dab4ff7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d357f9b81be718c812c587e8ffdc686"><td class="memItemLeft" align="right" valign="top"><a id="a0d357f9b81be718c812c587e8ffdc686"></a>
+<a class="el" href="structClientRequest.html">ClientRequest</a>&#160;</td><td class="memItemRight" valign="bottom"><b>GetMessage</b> ()</td></tr>
+<tr class="separator:a0d357f9b81be718c812c587e8ffdc686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf251475923af08ad59225581eda1f56"><td class="memItemLeft" align="right" valign="top"><a id="abf251475923af08ad59225581eda1f56"></a>
+<a class="el" href="structClientRequest.html">ClientRequest</a>&#160;</td><td class="memItemRight" valign="bottom"><b>GetConnectMessage</b> ()</td></tr>
+<tr class="separator:abf251475923af08ad59225581eda1f56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9581df5ff4f5c9493ea26411f2cdbb37"><td class="memItemLeft" align="right" valign="top"><a id="a9581df5ff4f5c9493ea26411f2cdbb37"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>MessageClear</b> ()</td></tr>
+<tr class="separator:a9581df5ff4f5c9493ea26411f2cdbb37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40ef6536bb004bc86c42405f47749ee0"><td class="memItemLeft" align="right" valign="top"><a id="a40ef6536bb004bc86c42405f47749ee0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>ConnectMessageClear</b> ()</td></tr>
+<tr class="separator:a40ef6536bb004bc86c42405f47749ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>DataModel/<a class="el" href="Channel_8h_source.html">Channel.h</a></li>

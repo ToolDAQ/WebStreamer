@@ -41,7 +41,7 @@ bool JobManager::Execute(){
   usleep(1000);
   sleep(5);
   worker_pool_manager->PrintStats();
-  if(worker_pool_manager->NumThreads()==m_thread_cap)  m_data->services->SendLog("Warning: Worker Pool Threads Maxed" , 0); //make this a warning
+  if(worker_pool_manager->NumThreads()==m_thread_cap)  m_data->services->SendLog("Warning: Worker Pool Threads Maxed"); //make this a warning
   std::cout<<"globalThreads="<<m_data->num_threads<<std::endl;
 
  

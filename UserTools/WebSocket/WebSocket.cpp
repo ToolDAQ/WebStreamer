@@ -1,7 +1,7 @@
 #include "WebSocket.h"
 
-DataModel* WebSocket::s_data=0;
-//us_listen_socket_t* WebSocket::s_token=0;
+DataModel* WebSocket::s_data = 0;
+int WebSocket::s_port = 6665;
 
 WebSocket_args::WebSocket_args():Thread_args() {}
 
@@ -17,12 +17,15 @@ bool WebSocket::Initialise(std::string configfile, DataModel &data) {
 
     unsigned int threadcount = 0;
     if (!m_variables.Get("Threads", threadcount)) threadcount = 1;
-    
+    if (!m_variables.Get("port", m_port)) m_port = 6665;
+    s_port = m_port;
+
     m_util = new Utilities();
 
     for (unsigned int i = 0; i < threadcount; i++) {
         WebSocket_args* tmparg = new WebSocket_args();
         tmparg->m_data = m_data;
+        tmparg->port = m_port;
         args.push_back(tmparg);
         
         std::stringstream tmp;
@@ -89,7 +92,7 @@ void WebSocket::Thread(Thread_args* arg) {
       .message = WebSocket::onMessage,
       .close = WebSocket::onClose
     })
-    .listen(666, WebSocket::onListen)  
+    .listen(args->port, WebSocket::onListen)
     .run();
 }
 
@@ -209,7 +212,7 @@ void WebSocket::onClose(uWS::WebSocket<false, true, PerSocketData>* ws, int, std
 void WebSocket::onListen(struct us_listen_socket_t* in_token) {
   if (in_token) {
     //s_token = in_token;
-    std::cout << "Listening on port 666"<<std::endl;
+    std::cout << "Listening on port " << WebSocket::s_port << std::endl;
     
     //   auto *context = us_socket_context( (us_listen_socket_t *) token );
     // globalLoop = us_socket_context_loop(context);

@@ -1,4 +1,7 @@
 #test1 DummyTool configfiles/Dummy/DummyToolConfig
 #test2 DummyTool configfiles/Dummy/DummyToolConfig
-WebSocket WebSocket Null
+WebSocket WebSocket configfiles/Dummy/WebSocketConfig
 FakeDataSource FakeDataSource Null
+HitmapFakeData HitmapFakeData configfiles/Dummy/HitmapFakeDataConfig
+TriggerRateFakeData TriggerRateFakeData configfiles/Dummy/TriggerRateFakeDataConfig
+EventDisplayFakeData EventDisplayFakeData configfiles/Dummy/EventDisplayFakeDataConfig

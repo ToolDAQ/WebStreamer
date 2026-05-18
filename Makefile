@@ -11,7 +11,7 @@ CXXFLAGS+= -O0 -g -lSegFault -rdynamic -DDEBUG
 endif
 
 DataModelInclude = -I $(Dependencies)/uWebSockets/src/
-DataModelLib =  -lssl -lcrypto -lz -pthread
+DataModelLib =  -lssl -lcrypto -lz -pthread -lpq
 
 MyToolsInclude =  -I $(Dependencies)/uWebSockets/src/ 
 MyToolsLib = $(Dependencies)/uWebSockets/uSockets/uSockets.a
@@ -69,7 +69,7 @@ lib/libDataModel.so: $(patsubst %.cpp, %.o , $(wildcard DataModel/*.cpp)) |   $(
 
 lib/libMyTools.so: $(patsubst %.cpp, %.o , $(filter-out $(AlreadyCompiled), $(wildcard UserTools/*/*.cpp))) |   $(DataModelHEADERS) $(MyToolHEADERS)
 	@echo -e "\e[38;5;201m\n*************** Making " $@ "****************\e[0m"
-	g++ $(CXXFLAGS) --shared $^ -o $@ $(Includes) $(DataModelInclude) $(MyToolsInclude)
+	g++ $(CXXFLAGS) --shared $^ -o $@ $(Includes) $(DataModelInclude) $(MyToolsInclude) -lpq
 
 lib/%.so:
 	@echo -e "\e[38;5;87m\n*************** sym linking Tool libs ****************\e[0m"

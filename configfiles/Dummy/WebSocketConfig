@@ -1,0 +1,3 @@
+port 6665
+Threads 1
+verbose 1

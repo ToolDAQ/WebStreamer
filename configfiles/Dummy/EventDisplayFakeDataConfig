@@ -1,0 +1,3 @@
+broadcast_interval_s 5
+geo_path /web/html-Detector/Shift/EventDisplay/geometry/geofile_HyperK.txt
+verbose 1

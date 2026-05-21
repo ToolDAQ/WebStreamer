@@ -48,7 +48,7 @@ class EventDisplayFakeData : public Tool {
   static void Thread(Thread_args* arg);
   static bool LoadGeometry(EventDisplayFakeData_args* args);
 
-  // Event generators — each returns a JSON hits array string
+  // Event generators - each returns a JSON hits array string
   static std::string GeneratePhysicsEvent(EventDisplayFakeData_args* args,
                                           const std::string& type);
   static std::string GenerateODEvent(EventDisplayFakeData_args* args);

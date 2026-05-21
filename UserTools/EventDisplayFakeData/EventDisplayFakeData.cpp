@@ -1,3 +1,9 @@
+// EventDisplayFakeData - synthetic event generator for the event_display channel.
+//
+// NOTE: This tool exists purely for development and testing. It could be
+// replaced by a live WCSim generator feeding directly into the WebStreamer
+// pipeline once real data acquisition is available.
+
 #include "EventDisplayFakeData.h"
 #include <fstream>
 #include <sstream>
@@ -9,48 +15,46 @@
 #include <unordered_set>
 
 // ---------------------------------------------------------------------------
-// Geometry constants — CSV coordinates are in centimetres
-// Values match mock_webstreamer.py (BARREL_RADIUS=3220 etc.)
+// Geometry constants - CSV coordinates are in centimetres
 // ---------------------------------------------------------------------------
-static const double BARREL_RADIUS = 3220.0;    // cm
-static const double BARREL_Z_MIN  = -3352.0;   // cm
-static const double BARREL_Z_MAX  =  3182.0;   // cm
-static const double CAP_Z_TOP     =  3267.55;  // cm
-static const double CAP_Z_BOTTOM  = -3267.55;  // cm
-static const double C_WATER       =    22.0;   // cm/ns  (c / n_water, n≈1.34)
+static const double BARREL_RADIUS = 3220.0;
+static const double BARREL_Z_MIN = -3352.0;
+static const double BARREL_Z_MAX = 3182.0;
+static const double CAP_Z_TOP = 3267.55;
+static const double CAP_Z_BOTTOM = -3267.55;
+static const double C_WATER = 22.0;  // cm/ns  (c/n_water, n~1.34)
 
-// OD noise hits added to every physics event (as in Python)
+// OD noise hits added to every physics event
 static const int OD_NOISE_MIN = 0;
 static const int OD_NOISE_MAX = 15;
 
 // ---------------------------------------------------------------------------
-// Physics parameters — faithfully translated from mock_webstreamer.py
-// PHYSICS_PARAMS (hit_smear converted mm→cm: Python 250mm → 25cm)
+// Physics parameters per trigger type (hit_smear in cm)
 // ---------------------------------------------------------------------------
 struct PhysicsParams {
-  int   n_hits_mean,  n_hits_std;
-  float c_ring_mean,  c_ring_std;
+  int n_hits_mean, n_hits_std;
+  float c_ring_mean, c_ring_std;
   float c_noise_mean, c_noise_std;
   float ring_fraction;
-  float t_ring_mean,  t_ring_std;   // ns
+  float t_ring_mean, t_ring_std;    // ns
   float t_noise_mean, t_noise_std;  // ns
   float cherenkov_angle_deg;
-  float hit_smear;   // cm (Python mm / 10)
+  float hit_smear;  // cm
 };
 
 // Index order matches PHYS_KEYS[]
 static const PhysicsParams PHYS[] = {
   // HE
-  { 2200, 800,  3.0f, 1.5f,  1.1f, 0.4f,  0.18f,  30.0f,  6.0f,  250.0f, 200.0f,  42.0f,  25.0f },
+  { 2200, 800, 3.0f, 1.5f, 1.1f, 0.4f, 0.18f, 30.0f, 6.0f, 250.0f, 200.0f, 42.0f, 25.0f },
   // LE
-  { 1600, 700,  2.0f, 1.2f,  1.0f, 0.4f,  0.12f,  30.0f,  8.0f,  250.0f, 200.0f,  42.0f,  35.0f },
+  { 1600, 700, 2.0f, 1.2f, 1.0f, 0.4f, 0.12f, 30.0f, 8.0f, 250.0f, 200.0f, 42.0f, 35.0f },
   // SHE
-  { 3000, 900,  4.0f, 2.0f,  1.2f, 0.5f,  0.20f,  28.0f,  5.0f,  250.0f, 200.0f,  42.0f,  20.0f },
+  { 3000, 900, 4.0f, 2.0f, 1.2f, 0.5f, 0.20f, 28.0f, 5.0f, 250.0f, 200.0f, 42.0f, 20.0f },
   // SLE
-  {  600, 200,  1.5f, 0.8f,  0.9f, 0.3f,  0.10f,  30.0f, 10.0f,  250.0f, 200.0f,  42.0f,  40.0f },
+  { 600, 200, 1.5f, 0.8f, 0.9f, 0.3f, 0.10f, 30.0f, 10.0f, 250.0f, 200.0f, 42.0f, 40.0f },
 };
 static const char* PHYS_KEYS[] = { "HE", "LE", "SHE", "SLE" };
-static const int   N_PHYS      = 4;
+static const int N_PHYS = 4;
 
 static const PhysicsParams* GetPhysicsParams(const std::string& type) {
   for (int i = 0; i < N_PHYS; i++)
@@ -97,9 +101,9 @@ bool EventDisplayFakeData::Initialise(std::string configfile, DataModel &data) {
   if (m_verbose >= 1) {
     std::cout << "EventDisplayFakeData: geometry loaded"
               << " barrel=" << args->barrel_ids.size()
-              << " top="    << args->top_ids.size()
+              << " top=" << args->top_ids.size()
               << " bottom=" << args->bottom_ids.size()
-              << " od="     << args->od_ids.size()
+              << " od=" << args->od_ids.size()
               << " calib_col=" << args->calib_col_ids.size()
               << " calib_dif=" << args->calib_dif_ids.size()
               << std::endl;
@@ -120,23 +124,23 @@ bool EventDisplayFakeData::Execute()  { return true; }
 
 bool EventDisplayFakeData::Finalise() {
   m_util->KillThread(args);
-  delete args;   args   = nullptr;
-  delete m_util; m_util = nullptr;
+  delete args;
+  args = nullptr;
+  delete m_util;
+  m_util = nullptr;
   return true;
 }
 
 // ---------------------------------------------------------------------------
 // Geometry loader
-// CSV columns: id, y, z, x, location   (x is column 3)
+// CSV columns: id, y, z, x, location  (x is column 3)
 //
-// PMT classification by ID range (matches HK_PMT_ENUM_RANGES in JS):
-//   1     – 29999  : ID PMTs      → barrel/top/bottom by CSV location
-//   30000 – 49999  : OD PMTs      → od_ids
-//   100000– 199999 : mPMT PMTs    → barrel/top/bottom by CSV location
-//                    (mPMTs are inward-facing, same pools as ID)
-//   200000– 209999 : calib_id_collimator → calib_col_ids
-//   220000– 229999 : calib_id_diffuser   → calib_dif_ids
-//   (210000-219999 calib_od_collimator and 230000+ calib_od_diffuser not used)
+// PMT classification by ID range:
+//   1-29999      ID PMTs       -> barrel/top/bottom by CSV location
+//   30000-49999  OD PMTs       -> od_ids
+//   100000-199999 mPMT PMTs    -> barrel/top/bottom by CSV location
+//   200000-209999 calib collimator -> calib_col_ids
+//   220000-229999 calib diffuser   -> calib_dif_ids
 // ---------------------------------------------------------------------------
 
 bool EventDisplayFakeData::LoadGeometry(EventDisplayFakeData_args* args) {
@@ -155,35 +159,34 @@ bool EventDisplayFakeData::LoadGeometry(EventDisplayFakeData_args* args) {
     if (cols.size() < 5) continue;
 
     int id = std::stoi(cols[0]);
-    float y  = std::stof(cols[1]);
-    float z  = std::stof(cols[2]);
-    float x  = std::stof(cols[3]);
+    float y = std::stof(cols[1]);
+    float z = std::stof(cols[2]);
+    float x = std::stof(cols[3]);
     std::string loc = cols[4];
     while (!loc.empty() && (loc.back() == '\r' || loc.back() == ' ')) loc.pop_back();
 
-    args->pmts[id]    = {x, y, z};
+    args->pmts[id] = {x, y, z};
     args->pmt_loc[id] = loc;
 
     if (id >= 30000 && id < 50000) {
       args->od_ids.push_back(id);
     } else if (id >= 200000 && id < 210000) {
-      args->calib_col_ids.push_back(id);   // calib_id_collimator
+      args->calib_col_ids.push_back(id);
     } else if (id >= 220000 && id < 230000) {
-      args->calib_dif_ids.push_back(id);   // calib_id_diffuser
+      args->calib_dif_ids.push_back(id);
     } else if ((id >= 1 && id < 30000) || (id >= 100000 && id < 200000)) {
-      // ID PMTs and mPMTs are both inward-facing — use CSV location for spatial split
+      // ID and mPMT PMTs are both inward-facing; classify by CSV location
       if      (loc == "barrel") args->barrel_ids.push_back(id);
       else if (loc == "top")    args->top_ids.push_back(id);
       else if (loc == "bottom") args->bottom_ids.push_back(id);
     }
-    // calib_od_collimator (210000-219999) and calib_od_diffuser (230000+) not used
   }
 
   return !args->pmts.empty();
 }
 
 // ---------------------------------------------------------------------------
-// BuildHitsJson — serialise hit map to JSON array
+// BuildHitsJson: serialise hit map to JSON array
 // ---------------------------------------------------------------------------
 
 std::string EventDisplayFakeData::BuildHitsJson(
@@ -194,7 +197,7 @@ std::string EventDisplayFakeData::BuildHitsJson(
   for (const auto& kv : hits) {
     if (!first) out << ",";
     out << "{\"c\":" << kv.second.first
-        << ",\"t\":"  << kv.second.second
+        << ",\"t\":" << kv.second.second
         << ",\"pmt\":" << kv.first << "}";
     first = false;
   }
@@ -206,12 +209,12 @@ std::string EventDisplayFakeData::BuildHitsJson(
 // Internal helpers (file-scope static)
 // ---------------------------------------------------------------------------
 
-// Random sample of up to search_n candidates (with replacement) — fast approx
-// to Python's random.sample(candidates, min(search_n, len)), avoids O(N) alloc.
+// Random sample of up to search_n candidates (with replacement) - fast approx,
+// avoids O(N) allocation.
 static int FindNearestPmt(double tx, double ty, double tz,
-                           const std::vector<int>& candidates,
-                           const std::unordered_map<int, std::array<float,3>>& pmts,
-                           std::mt19937& rng, int search_n = 500) {
+                          const std::vector<int>& candidates,
+                          const std::unordered_map<int, std::array<float,3>>& pmts,
+                          std::mt19937& rng, int search_n = 500) {
   int n = static_cast<int>(candidates.size());
   int k = std::min(search_n, n);
   std::uniform_int_distribution<int> pick(0, n - 1);
@@ -227,8 +230,7 @@ static int FindNearestPmt(double tx, double ty, double tz,
   return best_id;
 }
 
-// Gaussian noise hits on ID pool + small OD component.
-// Matches Python GenerateNoiseHits() logic.
+// Gaussian noise hits on the ID pool + small OD component.
 static void GenerateNoiseHits(
     int n_noise, float c_mean, float c_std,
     float t_mean, float t_std,
@@ -244,8 +246,7 @@ static void GenerateNoiseHits(
   std::normal_distribution<double> c_dist(c_mean, c_std);
   std::normal_distribution<double> t_dist(t_mean, t_std);
 
-  // ID pool = barrel + top + bottom
-  // Build combined reference without copying
+  // ID pool = barrel + top + bottom, referenced without copying
   const std::vector<int>* id_segs[3] = { &barrel, &top, &bottom };
   int id_total = static_cast<int>(barrel.size() + top.size() + bottom.size());
 
@@ -288,9 +289,7 @@ static void GenerateNoiseHits(
 
 // ---------------------------------------------------------------------------
 // Physics event (HE / LE / SHE / SLE)
-// Cherenkov ring (ring_fraction of hits) + noise hits (rest).
-// Translated directly from GeneratePhysicsEvent + GenerateRingHitPositions
-// in mock_webstreamer.py.
+// Cherenkov ring (ring_fraction of hits) + noise hits.
 // ---------------------------------------------------------------------------
 
 std::string EventDisplayFakeData::GeneratePhysicsEvent(
@@ -303,27 +302,27 @@ std::string EventDisplayFakeData::GeneratePhysicsEvent(
 
   std::normal_distribution<double> n_dist(p->n_hits_mean, p->n_hits_std);
   int n_total = std::max(10, static_cast<int>(n_dist(args->rng)));
-  int n_ring  = std::max(5,  static_cast<int>(n_total * p->ring_fraction));
+  int n_ring = std::max(5, static_cast<int>(n_total * p->ring_fraction));
   int n_noise = n_total - n_ring;
 
   // Random vertex inside barrel at 50% radius
   std::uniform_real_distribution<double> uni01(0.0, 1.0);
   std::uniform_real_distribution<double> uni_phi(0.0, 2.0 * M_PI);
-  double vr   = BARREL_RADIUS * 0.5 * std::sqrt(uni01(args->rng));
+  double vr = BARREL_RADIUS * 0.5 * std::sqrt(uni01(args->rng));
   double vphi = uni_phi(args->rng);
-  double vx   = vr * std::cos(vphi);
-  double vy   = vr * std::sin(vphi);
-  double vz   = BARREL_Z_MIN*0.6 + (BARREL_Z_MAX*0.6 - BARREL_Z_MIN*0.6) * uni01(args->rng);
+  double vx = vr * std::cos(vphi);
+  double vy = vr * std::sin(vphi);
+  double vz = BARREL_Z_MIN*0.6 + (BARREL_Z_MAX*0.6 - BARREL_Z_MIN*0.6) * uni01(args->rng);
 
-  // Random particle direction (matching Python: theta uniform [0.1, pi-0.1])
+  // Random particle direction (theta uniform in [0.1, pi-0.1])
   std::uniform_real_distribution<double> theta_dist(0.1, M_PI - 0.1);
   double theta = theta_dist(args->rng);
-  double phi   = uni_phi(args->rng);
-  double dx    = std::sin(theta) * std::cos(phi);
-  double dy    = std::sin(theta) * std::sin(phi);
-  double dz    = std::cos(theta);
+  double phi = uni_phi(args->rng);
+  double dx = std::sin(theta) * std::cos(phi);
+  double dy = std::sin(theta) * std::sin(phi);
+  double dz = std::cos(theta);
 
-  // Orthonormal basis perpendicular to (dx,dy,dz) — matches Python exactly
+  // Orthonormal basis perpendicular to (dx,dy,dz)
   double e1x, e1y, e1z;
   if (std::fabs(dx) < 0.9) { e1x = dz;  e1y = 0.0; e1z = -dx; }
   else                      { e1x = 0.0; e1y = dz;  e1z = -dy; }
@@ -334,8 +333,8 @@ std::string EventDisplayFakeData::GeneratePhysicsEvent(
   double e2z = dx*e1y - dy*e1x;
 
   double angle_rad = p->cherenkov_angle_deg * M_PI / 180.0;
-  double sin_c     = std::sin(angle_rad);
-  double cos_c     = std::cos(angle_rad);
+  double sin_c = std::sin(angle_rad);
+  double cos_c = std::cos(angle_rad);
 
   std::normal_distribution<double> smear(0.0, p->hit_smear);
   std::normal_distribution<double> t_ring_dist(p->t_ring_mean, p->t_ring_std);
@@ -359,17 +358,16 @@ std::string EventDisplayFakeData::GeneratePhysicsEvent(
     bool found = false;
 
     // Barrel intersection
-    double A    = rx*rx + ry*ry;
-    double B    = 2.0*(vx*rx + vy*ry);
-    double C    = vx*vx + vy*vy - BARREL_RADIUS*BARREL_RADIUS;
+    double A = rx*rx + ry*ry;
+    double B = 2.0*(vx*rx + vy*ry);
+    double C = vx*vx + vy*vy - BARREL_RADIUS*BARREL_RADIUS;
     double disc = B*B - 4.0*A*C;
 
     if (A > 1e-9 && disc >= 0) {
       double sq = std::sqrt(disc);
-      // Try both roots in ascending order (matches Python's sorted([...]))
       double t_roots[2] = { (-B - sq)/(2.0*A), (-B + sq)/(2.0*A) };
       for (double ts : t_roots) {
-        if (ts > 1.0) {   // > 1 cm minimum travel (Python uses > 10 in mm scale)
+        if (ts > 1.0) {  // > 1 cm minimum travel
           double hz = vz + rz*ts;
           if (hz >= BARREL_Z_MIN && hz <= BARREL_Z_MAX) {
             hit_x = vx + rx*ts;
@@ -429,7 +427,7 @@ std::string EventDisplayFakeData::GeneratePhysicsEvent(
     ring_done++;
   }
 
-  // Noise hits: ID pool + 0-15 OD hits (matches Python GenerateNoiseHits)
+  // Noise hits: ID pool + 0-15 OD hits
   GenerateNoiseHits(
     n_noise, p->c_noise_mean, p->c_noise_std,
     p->t_noise_mean, p->t_noise_std,
@@ -442,29 +440,27 @@ std::string EventDisplayFakeData::GeneratePhysicsEvent(
 
 // ---------------------------------------------------------------------------
 // OD trigger event
-// Localised Gaussian patch on OD barrel + small ID/mPMT spillover.
-// Translated from GenerateODEvent() in mock_webstreamer.py.
+// Localised Gaussian patch on the OD barrel + small ID/mPMT spillover.
 // ---------------------------------------------------------------------------
 
 std::string EventDisplayFakeData::GenerateODEvent(EventDisplayFakeData_args* args) {
   if (args->od_ids.empty()) return "[]";
 
-  // OD trigger params (from Python OD_TRIGGER_PARAMS)
-  const int    n_od_mean      = 200;
-  const int    n_od_std       =  60;
-  const int    n_spill_mean   =  15;
-  const int    n_spill_std    =   8;
-  const float  c_mean         = 1.8f;
-  const float  c_std          = 0.8f;
-  const float  t_mean         = 30.0f;
-  const float  t_std          = 15.0f;
-  const double phi_spread     = 0.6;    // rad
-  const double z_spread       = 800.0;  // cm
+  const int n_od_mean = 200;
+  const int n_od_std = 60;
+  const int n_spill_mean = 15;
+  const int n_spill_std = 8;
+  const float c_mean = 1.8f;
+  const float c_std = 0.8f;
+  const float t_mean = 30.0f;
+  const float t_std = 15.0f;
+  const double phi_spread = 0.6;   // rad
+  const double z_spread = 800.0;  // cm
 
   std::uniform_real_distribution<double> uni_phi(0.0, 2.0 * M_PI);
   std::uniform_real_distribution<double> uni_z(BARREL_Z_MIN * 0.7, BARREL_Z_MAX * 0.7);
   double patch_phi = uni_phi(args->rng);
-  double patch_z   = uni_z(args->rng);
+  double patch_z = uni_z(args->rng);
 
   std::normal_distribution<double> n_od_dist(n_od_mean, n_od_std);
   std::normal_distribution<double> c_dist(c_mean, c_std);
@@ -485,13 +481,13 @@ std::string EventDisplayFakeData::GenerateODEvent(EventDisplayFakeData_args* arg
 
     const auto& pm = args->pmts.at(pid);
     double pmt_phi = std::atan2(pm[1], pm[0]);
-    double dphi    = std::fabs(std::atan2(
+    double dphi = std::fabs(std::atan2(
         std::sin(pmt_phi - patch_phi), std::cos(pmt_phi - patch_phi)));
-    double dz      = std::fabs(pm[2] - patch_z);
+    double dz = std::fabs(pm[2] - patch_z);
 
-    // Gaussian acceptance probability (matches Python)
+    // Gaussian acceptance probability
     double prob = std::exp(-0.5 * (dphi/phi_spread) * (dphi/phi_spread)) *
-                  std::exp(-0.5 * (dz  /z_spread  ) * (dz  /z_spread  ));
+                  std::exp(-0.5 * (dz/z_spread) * (dz/z_spread));
     if (prob_pick(args->rng) > prob) continue;
 
     used_ids.insert(pid);
@@ -502,13 +498,13 @@ std::string EventDisplayFakeData::GenerateODEvent(EventDisplayFakeData_args* arg
     od_done++;
   }
 
-  // Small ID/mPMT spillover — random, not localised (matches Python)
+  // Small ID/mPMT spillover - random, not localised
   std::normal_distribution<double> n_spill_dist(n_spill_mean, n_spill_std);
   int n_spill = std::max(0, static_cast<int>(n_spill_dist(args->rng)));
 
   std::vector<int> id_pool;
   id_pool.insert(id_pool.end(), args->barrel_ids.begin(), args->barrel_ids.end());
-  id_pool.insert(id_pool.end(), args->top_ids.begin(),    args->top_ids.end());
+  id_pool.insert(id_pool.end(), args->top_ids.begin(), args->top_ids.end());
   id_pool.insert(id_pool.end(), args->bottom_ids.begin(), args->bottom_ids.end());
 
   if (!id_pool.empty() && n_spill > 0) {
@@ -535,12 +531,10 @@ std::string EventDisplayFakeData::GenerateODEvent(EventDisplayFakeData_args* arg
 // Calibration event
 // Picks a random source PMT (collimator or diffuser), aims beam inward,
 // and illuminates a patch of ID PMTs on the opposite wall.
-// The hits are on ID PMTs — NOT on the calibration source PMTs.
-// Translated from GenerateCalibEvent() in mock_webstreamer.py.
+// The hits are on ID PMTs - NOT on the calibration source PMTs.
 // ---------------------------------------------------------------------------
 
 std::string EventDisplayFakeData::GenerateCalibEvent(EventDisplayFakeData_args* args) {
-  // Randomly choose collimator or diffuser
   std::uniform_real_distribution<double> uni01(0.0, 1.0);
   bool use_col = (uni01(args->rng) < 0.5);
 
@@ -556,28 +550,27 @@ std::string EventDisplayFakeData::GenerateCalibEvent(EventDisplayFakeData_args* 
   }
   const std::vector<int>& src = use_col ? args->calib_col_ids : args->calib_dif_ids;
 
-  // Calibration params (from Python COLLIMATOR_PARAMS / DIFFUSER_PARAMS)
-  float half_angle_deg = use_col ?  3.0f :  40.0f;
-  int   n_hits_mean    = use_col ?    30 :    150;
-  int   n_hits_std     = use_col ?    10 :     40;
-  float c_mean         = use_col ?  1.5f :   1.2f;
-  float c_std          = use_col ?  0.5f :   0.4f;
-  float t_smear        = use_col ?  2.0f :   3.0f;
-  int   n_noise        = 5;
+  // Collimator: narrow beam; diffuser: wide beam
+  float half_angle_deg = use_col ? 3.0f : 40.0f;
+  int n_hits_mean = use_col ? 30 : 150;
+  int n_hits_std = use_col ? 10 : 40;
+  float c_mean = use_col ? 1.5f : 1.2f;
+  float c_std = use_col ? 0.5f : 0.4f;
+  float t_smear = use_col ? 2.0f : 3.0f;
+  int n_noise = 5;
 
-  // Pick a random source PMT
   std::uniform_int_distribution<int> src_pick(0, static_cast<int>(src.size()) - 1);
   int source_id = src[src_pick(args->rng)];
   const auto& sp = args->pmts.at(source_id);
   double sx = sp[0], sy = sp[1], sz = sp[2];
 
-  // Beam direction: from source toward detector centre (inward-pointing)
+  // Beam direction: from source toward detector centre
   double source_phi = std::atan2(sy, sx);
   double bdx = -std::cos(source_phi);
   double bdy = -std::sin(source_phi);
   double bdz = 0.0;
 
-  // Cap sources point straight down/up (matches Python is_cap_source logic)
+  // Cap sources point straight down or up
   double source_r = std::sqrt(sx*sx + sy*sy);
   if (source_r < 1000.0) {
     bdx = 0.0; bdy = 0.0;
@@ -592,15 +585,15 @@ std::string EventDisplayFakeData::GenerateCalibEvent(EventDisplayFakeData_args* 
   patch_cz = std::max(BARREL_Z_MIN, std::min(BARREL_Z_MAX, patch_cz));
 
   double half_angle_rad = half_angle_deg * M_PI / 180.0;
-  double patch_radius   = beam_travel * std::tan(half_angle_rad);
+  double patch_radius = beam_travel * std::tan(half_angle_rad);
 
   // All ID + mPMT PMTs
   std::vector<int> id_pool;
   id_pool.insert(id_pool.end(), args->barrel_ids.begin(), args->barrel_ids.end());
-  id_pool.insert(id_pool.end(), args->top_ids.begin(),    args->top_ids.end());
+  id_pool.insert(id_pool.end(), args->top_ids.begin(), args->top_ids.end());
   id_pool.insert(id_pool.end(), args->bottom_ids.begin(), args->bottom_ids.end());
 
-  // Find ID PMTs within the beam patch (FindPmtsWithinPatch in Python)
+  // Find ID PMTs within the beam patch
   std::vector<int> patch_pmts;
   for (int pid : id_pool) {
     const auto& pm = args->pmts.at(pid);
@@ -621,7 +614,7 @@ std::string EventDisplayFakeData::GenerateCalibEvent(EventDisplayFakeData_args* 
   std::unordered_map<int, std::pair<float,float>> hits;
 
   if (!patch_pmts.empty()) {
-    // Sample min(n_hits, patch_pmts.size()) without replacement (partial shuffle)
+    // Sample without replacement via partial shuffle
     int n_select = std::min(n_hits, static_cast<int>(patch_pmts.size()));
     for (int i = 0; i < n_select; i++) {
       std::uniform_int_distribution<int> d(i, static_cast<int>(patch_pmts.size()) - 1);
@@ -640,7 +633,7 @@ std::string EventDisplayFakeData::GenerateCalibEvent(EventDisplayFakeData_args* 
     }
   }
 
-  // Small noise contribution (matches Python noise_hits=5, 0.8±0.3, 200±150 ns)
+  // Small noise contribution (noise_hits=5, 0.8±0.3 pe, 200±150 ns)
   GenerateNoiseHits(
     n_noise, 0.8f, 0.3f, 200.0f, 150.0f,
     args->barrel_ids, args->top_ids, args->bottom_ids, args->od_ids,
@@ -651,13 +644,13 @@ std::string EventDisplayFakeData::GenerateCalibEvent(EventDisplayFakeData_args* 
 }
 
 // ---------------------------------------------------------------------------
-// Thread — called repeatedly by ToolDAQ's thread runner
+// Thread - called repeatedly by ToolDAQ's thread runner
 // ---------------------------------------------------------------------------
 
 void EventDisplayFakeData::Thread(Thread_args* arg) {
   EventDisplayFakeData_args* args = reinterpret_cast<EventDisplayFakeData_args*>(arg);
 
-  // Weighted random type selection (matches Python EVENT_TYPE_WEIGHTS)
+  // Weighted random event type selection
   static const std::vector<std::pair<const char*, float>> type_weights = {
     { "HE",    0.4750f },
     { "LE",    0.4750f },
@@ -688,7 +681,7 @@ void EventDisplayFakeData::Thread(Thread_args* arg) {
 
   // Timestamp
   auto now = std::chrono::system_clock::now();
-  auto t   = std::chrono::system_clock::to_time_t(now);
+  auto t = std::chrono::system_clock::to_time_t(now);
   std::ostringstream ts;
   ts << std::put_time(std::gmtime(&t), "%Y-%m-%dT%H:%M:%SZ");
   std::string time_iso = ts.str();
@@ -698,15 +691,14 @@ void EventDisplayFakeData::Thread(Thread_args* arg) {
   // Write to DB
   FakeDataDB_WriteEventDisplay(args->db_conn, event_number, time_iso, event_type, hits_json);
 
-  // Broadcast over WebSocket
+  // Broadcast over WebSocket; do not clear - keep last event in channel buffer
+  // so clients connecting between broadcasts receive it immediately.
   std::string payload =
     "{\"event_number\":" + std::to_string(event_number) +
     ",\"time\":\""       + time_iso + "\""
     ",\"type\":\""       + event_type + "\""
     ",\"data\":"         + hits_json + "}";
 
-  // Do NOT call MessageClear/ConnectMessageClear — keep last event in channel
-  // buffer so clients connecting between broadcasts get it immediately.
   args->m_data->channels["event_display"].Send(payload, event_type);
 
   sleep(args->broadcast_interval_s);

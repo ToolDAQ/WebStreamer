@@ -8,9 +8,7 @@
 #include <App.h>
 #include <PerSocketData.h>
 #include <shared_mutex>
-#include <unordered_map>
 #include <zstd.h>
-#include <vector>
 #include <ClientRequest.h>
 #include <deque>
 
@@ -36,13 +34,13 @@ class Channel{
 private:
 
   bool CHECK_ZSTD(size_t const code);
-  
+
   std::unordered_map<std::string, std::vector<uWS::WebSocket<false, true, PerSocketData>* > > filtered_clients;
   std::shared_mutex mtx;
-  ZSTD_CCtx* cctx = 0 ;
-  std::string compressed_data="";
+  ZSTD_CCtx* cctx = 0;
+  std::string compressed_data = "";
   size_t cSize = 0;
-  
+
   std::deque<ClientRequest> on_connect;
   std::deque<ClientRequest> on_message;
   std::mutex message_mtx;

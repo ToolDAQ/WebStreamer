@@ -26,7 +26,8 @@ struct WebSocket_args:Thread_args{
 
   DataModel* m_data = 0;
   uWS::Loop* loop = 0;
-  uWS::App* app = 0;  
+  uWS::App* app = 0;
+  int port = 6665;
 };
 
 
@@ -49,7 +50,7 @@ class WebSocket: public Tool {
   bool Execute(); ///< Executre function used to perform Tool perpose. 
   bool Finalise(); ///< Finalise funciton used to clean up resorces.
   static DataModel* s_data;
-  //  static us_listen_socket_t* s_token;
+  static int s_port;
 
 
  private:
@@ -58,6 +59,7 @@ class WebSocket: public Tool {
   Utilities* m_util; ///< Pointer to utilities class to help with threading
   std::vector<WebSocket_args*> args; ///< Vector of thread args (also holds pointers to the threads)
   unsigned int m_freethreads; ///< Keeps track of free threads
+  int m_port;
 
   static void onUpgrade(uWS::HttpResponse<false>* res, uWS::HttpRequest* req, us_socket_context_t* context);
   static void onOpen(uWS::WebSocket<false, true, PerSocketData>* ws);

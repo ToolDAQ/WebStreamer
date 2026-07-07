@@ -8,6 +8,6 @@ Tool* ret=0;
 if (tool=="DummyTool") ret=new DummyTool;
 if (tool=="JobManager") ret=new JobManager;
 if (tool=="WebSocket") ret=new WebSocket;
-  if (tool=="FakeDataSource") ret=new FakeDataSource;
+  if (tool=="ServiceDiscoverySource") ret=new ServiceDiscoverySource;
 return ret;
 }

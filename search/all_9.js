@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['websocket_26',['WebSocket',['../classWebSocket.html',1,'WebSocket'],['../classWebSocket.html#a16ac6769f5e0225db15b644884a367ae',1,'WebSocket::WebSocket()']]],
-  ['websocket_5fargs_27',['WebSocket_args',['../structWebSocket__args.html',1,'']]],
-  ['websocketapp_28',['WebSocketApp',['../classWebSocketApp.html',1,'WebSocketApp'],['../classWebSocketApp.html#a88161965ec5d7803d0056f7362ebca02',1,'WebSocketApp::WebSocketApp()']]],
-  ['websocketapp_5fargs_29',['WebSocketApp_args',['../structWebSocketApp__args.html',1,'']]]
+  ['servicediscoverysource_26',['ServiceDiscoverySource',['../classServiceDiscoverySource.html',1,'ServiceDiscoverySource'],['../classServiceDiscoverySource.html#a8e00e1457976705ab5dfc14455162445',1,'ServiceDiscoverySource::ServiceDiscoverySource()']]],
+  ['servicediscoverysource_5fargs_27',['ServiceDiscoverySource_args',['../structServiceDiscoverySource__args.html',1,'']]],
+  ['servicediscoverysource_5fargs_5fargs_28',['ServiceDiscoverySource_args_args',['../structServiceDiscoverySource__args__args.html',1,'']]]
 ];
